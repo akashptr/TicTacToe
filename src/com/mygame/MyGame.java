@@ -2,14 +2,21 @@ package com.mygame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MyGame extends JFrame {
+public class MyGame extends JFrame implements ActionListener {
+	
 	private JLabel heading;
 	private JPanel board;
 	private JLabel clock;
-	private JButton[] block;
+	
+	private String crossImage = "bin/Images/Cross.png";
+	private String circleImage = "bin/Images/Circle.png";
+	private int[] gameChances = {2, 2, 2, 2, 2, 2, 2, 2, 2};
+	private int activePlayer = 0;
 	
 	MyGame() {
 		setTitle("Tic Tac Toe");
@@ -31,12 +38,11 @@ public class MyGame extends JFrame {
 		
 		board = new JPanel();
 		board.setLayout(new GridLayout(3, 3));
-		block = new JButton[9];
 		for(int i=0; i<9; i++) {
 			JButton button = new JButton();
-			button.setIcon(new ImageIcon("bin/Images/Cross.png"));
+			button.setName(String.valueOf(i));
 			button.setBackground(Color.decode("#90caf9"));
-			block[i] = button;
+			button.addActionListener(this);
 			board.add(button);
 		}
 		
@@ -64,5 +70,20 @@ public class MyGame extends JFrame {
 		this.add(heading, BorderLayout.NORTH);
 		this.add(board, BorderLayout.CENTER);
 		this.add(clock, BorderLayout.SOUTH);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		var currentButton = (JButton)e.getSource();
+		int chanceNumber = Integer.parseInt(currentButton.getName().trim());
+		if(gameChances[chanceNumber] == 2) {
+			if(activePlayer == 0)
+				currentButton.setIcon(new ImageIcon(crossImage));
+			else
+				currentButton.setIcon(new ImageIcon(circleImage));
+			gameChances[chanceNumber] = activePlayer;
+			activePlayer = (activePlayer + 1) % 2;
+		}else {
+			JOptionPane.showMessageDialog(this, "Position already occupied");
+		}
 	}
 }
