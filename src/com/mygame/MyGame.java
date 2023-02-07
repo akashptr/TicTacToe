@@ -13,8 +13,8 @@ public class MyGame extends JFrame implements ActionListener {
 	private JPanel board;
 	private JLabel clock;
 
-	private String crossImage = "bin/Images/Cross.png";
-	private String circleImage = "bin/Images/Circle.png";
+	private ImageIcon cross;
+	private ImageIcon circle;	
 	private int[] gameChances = { 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 	private int activePlayer = 0;
 	private int chanceLeft = 9;
@@ -26,7 +26,7 @@ public class MyGame extends JFrame implements ActionListener {
 		setTitle("Tic Tac Toe");
 		ImageIcon icon = new ImageIcon("bin/Images/Icon.png");
 		setIconImage(icon.getImage());
-		setSize(700, 700);
+		setSize(500, 500);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		createGUI();
 		setVisible(true);
@@ -75,6 +75,13 @@ public class MyGame extends JFrame implements ActionListener {
 		this.add(heading, BorderLayout.NORTH);
 		this.add(board, BorderLayout.CENTER);
 		this.add(clock, BorderLayout.SOUTH);
+		
+		ImageIcon icon = new ImageIcon("bin/Images/Cross.png");
+		Image scaledIcon = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+		this.cross = new ImageIcon(scaledIcon);
+		icon = new ImageIcon("bin/Images/Circle.png");
+		scaledIcon = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+		this.circle = new ImageIcon(scaledIcon);
 	}
 
 	@Override
@@ -82,10 +89,12 @@ public class MyGame extends JFrame implements ActionListener {
 		var currentButton = (JButton) e.getSource();
 		int chanceNumber = Integer.parseInt(currentButton.getName().trim());
 		if (gameChances[chanceNumber] == 2) {
-			if (activePlayer == 0)
-				currentButton.setIcon(new ImageIcon(crossImage));
-			else
-				currentButton.setIcon(new ImageIcon(circleImage));
+			ImageIcon icon;
+			if (activePlayer == 0) {
+				currentButton.setIcon(this.cross);
+			} else {
+				currentButton.setIcon(this.circle);
+			}
 			gameChances[chanceNumber] = activePlayer;
 
 			// Winning logic
