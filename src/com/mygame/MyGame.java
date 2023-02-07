@@ -17,6 +17,7 @@ public class MyGame extends JFrame implements ActionListener {
 	private String circleImage = "bin/Images/Circle.png";
 	private int[] gameChances = { 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 	private int activePlayer = 0;
+	private int chanceLeft = 9;
 
 	private static int[][] winPos = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 },
 			{ 0, 4, 8 }, { 2, 4, 6 }, };
@@ -87,11 +88,15 @@ public class MyGame extends JFrame implements ActionListener {
 				currentButton.setIcon(new ImageIcon(circleImage));
 			gameChances[chanceNumber] = activePlayer;
 
+			// Winning logic
+			boolean winnerFound = false;
 			for (int[] winPat : winPos) {
 				if (gameChances[winPat[0]] == gameChances[winPat[1]] && gameChances[winPat[1]] == gameChances[winPat[2]]
 						&& gameChances[winPat[2]] != 2) {
-					JOptionPane.showMessageDialog(this, "Player " + (activePlayer + 1) + " has won the game");
-					int choice = JOptionPane.showConfirmDialog(this, "Do you want to start again?","Confirm", JOptionPane.YES_NO_OPTION);
+					winnerFound = true;
+					int choice = JOptionPane.showConfirmDialog(this,
+							"Player " + (activePlayer + 1) + " has won\nDo you want to start again?", "Confirm",
+							JOptionPane.YES_NO_OPTION);
 					if (choice == JOptionPane.YES_OPTION) {
 						new MyGame();
 						this.dispose();
@@ -101,7 +106,21 @@ public class MyGame extends JFrame implements ActionListener {
 					break;
 				}
 			}
+
 			activePlayer = (activePlayer + 1) % 2;
+
+			// Draw Logic
+			chanceLeft--;
+			if (chanceLeft == 0 && winnerFound == false) {
+				int choice = JOptionPane.showConfirmDialog(this, "Match Draw\nDo you want to start again?", "Game Over",
+						JOptionPane.YES_NO_OPTION);
+				if (choice == JOptionPane.YES_OPTION) {
+					new MyGame();
+					this.dispose();
+				} else {
+					System.exit(1);
+				}
+			}
 		} else {
 			JOptionPane.showMessageDialog(this, "Position already occupied");
 		}
